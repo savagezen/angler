@@ -568,7 +568,6 @@ config FORCE_MAX_ZONEORDER
 	default "14" if (ARM64_64K_PAGES && TRANSPARENT_HUGEPAGE)
 	default "11"
 
-<<<<<<< HEAD
 config KEXEC
 	depends on (!SMP || PM_SLEEP_SMP)
 	bool "kexec system call"
@@ -604,8 +603,6 @@ config KEXEC_HARDBOOT
 	  kernel capable of performing a hardboot kexec.  It is _not_ required by a
 	  kexec'd kernel.
 
-=======
->>>>>>> c9d2cb4dadae... Merge remote-tracking branch 'origin/android-msm-angler-3.10-security-next' into android-msm-angler-3.10
 endmenu
 
 menu "Boot options"
