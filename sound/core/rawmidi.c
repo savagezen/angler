@@ -961,6 +961,10 @@ static long snd_rawmidi_kernel_read1(struct snd_rawmidi_substream *substream,
 
 	if (userbuf)
 		mutex_lock(&runtime->realloc_mutex);
+<<<<<<< HEAD
+=======
+	spin_lock_irqsave(&runtime->lock, flags);
+>>>>>>> aosip-upstream/pie
 	while (count > 0 && runtime->avail) {
 		count1 = runtime->buffer_size - runtime->appl_ptr;
 		if (count1 > count)
@@ -979,7 +983,11 @@ static long snd_rawmidi_kernel_read1(struct snd_rawmidi_substream *substream,
 		if (userbuf) {
 			spin_unlock_irqrestore(&runtime->lock, flags);
 			if (copy_to_user(userbuf + result,
+<<<<<<< HEAD
 					 runtime->buffer + runtime->appl_ptr, count1)) {
+=======
+					 runtime->buffer + appl_ptr, count1)) {
+>>>>>>> aosip-upstream/pie
 				mutex_unlock(&runtime->realloc_mutex);
 				return result > 0 ? result : -EFAULT;
 			}
@@ -988,6 +996,10 @@ static long snd_rawmidi_kernel_read1(struct snd_rawmidi_substream *substream,
 		result += count1;
 		count -= count1;
 	}
+<<<<<<< HEAD
+=======
+	spin_unlock_irqrestore(&runtime->lock, flags);
+>>>>>>> aosip-upstream/pie
 	if (userbuf)
 		mutex_unlock(&runtime->realloc_mutex);
 	return result;

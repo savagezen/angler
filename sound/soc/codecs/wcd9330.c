@@ -102,7 +102,7 @@ MODULE_PARM_DESC(cpe_debug_mode, "boot cpe in debug mode");
 
 static atomic_t kp_tomtom_priv;
 
-static int high_perf_mode;
+int high_perf_mode = 1;
 module_param(high_perf_mode, int,
 			S_IRUGO | S_IWUSR | S_IWGRP);
 MODULE_PARM_DESC(high_perf_mode, "enable/disable class AB config for hph");
@@ -1020,6 +1020,9 @@ static int tomtom_set_compander(struct snd_kcontrol *kcontrol,
 		    kcontrol->private_value)->shift;
 	int value = ucontrol->value.integer.value[0];
 
+	if (comp == COMPANDER_1)
+		value = 0;
+
 	pr_debug("%s: Compander %d enable current %d, new %d\n",
 		 __func__, comp, tomtom->comp_enabled[comp], value);
 	tomtom->comp_enabled[comp] = value;
@@ -1765,9 +1768,9 @@ static const struct snd_kcontrol_new tomtom_1_x_analog_gain_controls[] = {
 	SOC_ENUM_EXT("EAR PA Gain", tomtom_1_x_ear_pa_gain_enum,
 		tomtom_pa_gain_get, tomtom_pa_gain_put),
 
-	SOC_SINGLE_TLV("HPHL Volume", TOMTOM_A_RX_HPH_L_GAIN, 0, 20, 1,
+	SOC_SINGLE_TLV("HPH_L Volume", TOMTOM_A_RX_HPH_L_GAIN, 0, 20, 1,
 		line_gain),
-	SOC_SINGLE_TLV("HPHR Volume", TOMTOM_A_RX_HPH_R_GAIN, 0, 20, 1,
+	SOC_SINGLE_TLV("HPH_R Volume", TOMTOM_A_RX_HPH_R_GAIN, 0, 20, 1,
 		line_gain),
 
 	SOC_SINGLE_TLV("LINEOUT1 Volume", TOMTOM_A_RX_LINE_1_GAIN, 0, 20, 1,
@@ -5294,6 +5297,7 @@ static int tomtom_volatile(struct snd_soc_codec *ssc, unsigned int reg)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int reg_access(unsigned int reg)
 {
 	int ret = 1;
@@ -5318,6 +5322,12 @@ static int reg_access(unsigned int reg)
 }
 
 static int tomtom_write(struct snd_soc_codec *codec, unsigned int reg,
+=======
+#ifndef CONFIG_SOUND_CONTROL_HAX_3_GPL
+static
+#endif
+int tomtom_write(struct snd_soc_codec *codec, unsigned int reg,
+>>>>>>> aosip-upstream/pie
 	unsigned int value)
 {
 	int val;
@@ -5349,8 +5359,19 @@ static int tomtom_write(struct snd_soc_codec *codec, unsigned int reg,
 		return wcd9xxx_reg_write(&wcd9xxx->core_res, reg, val);
 	}
 }
+<<<<<<< HEAD
 
 static unsigned int tomtom_read(struct snd_soc_codec *codec,
+=======
+#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
+EXPORT_SYMBOL(tomtom_write);
+#endif
+
+#ifndef CONFIG_SOUND_CONTROL_HAX_3_GPL 
+static
+#endif
+unsigned int tomtom_read(struct snd_soc_codec *codec,
+>>>>>>> aosip-upstream/pie
 				unsigned int reg)
 {
 	unsigned int val;
@@ -5382,6 +5403,9 @@ static unsigned int tomtom_read(struct snd_soc_codec *codec,
 		return val;
 	}
 }
+#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
+EXPORT_SYMBOL(tomtom_read);
+#endif
 
 static int tomtom_startup(struct snd_pcm_substream *substream,
 		struct snd_soc_dai *dai)
@@ -8778,6 +8802,7 @@ static int tomtom_cpe_initialize(struct snd_soc_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
 void update_headphones_volume_boost(unsigned int vol_boost)
 {
 	int default_val = soundcontrol.default_hp_value;
@@ -8834,6 +8859,12 @@ void update_camera_mic_gain(unsigned int vol_boost)
                 tomtom_read(soundcontrol.snd_control_codec,
                 TOMTOM_A_CDC_TX4_VOL_CTL_GAIN));
 }
+=======
+#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
+struct snd_soc_codec *fauxsound_codec_ptr;
+EXPORT_SYMBOL(fauxsound_codec_ptr);
+#endif
+>>>>>>> aosip-upstream/pie
 
 static int tomtom_codec_probe(struct snd_soc_codec *codec)
 {
@@ -8847,7 +8878,14 @@ static int tomtom_codec_probe(struct snd_soc_codec *codec)
 	void *ptr = NULL;
 	struct wcd9xxx_core_resource *core_res;
 
+<<<<<<< HEAD
 	soundcontrol.snd_control_codec = codec;
+=======
+#ifdef CONFIG_SOUND_CONTROL_HAX_3_GPL
+	pr_info("tomtom codec probe...\n");
+	fauxsound_codec_ptr = codec;
+#endif
+>>>>>>> aosip-upstream/pie
 
 	codec->control_data = dev_get_drvdata(codec->dev->parent);
 	control = codec->control_data;

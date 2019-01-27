@@ -299,7 +299,10 @@ struct qpnp_hap {
 	struct qpnp_pwm_info pwm_info;
 	struct mutex lock;
 	struct mutex wf_lock;
+<<<<<<< HEAD
 	struct mutex set_lock;
+=======
+>>>>>>> aosip-upstream/pie
 	spinlock_t td_lock;
 	struct work_struct td_work;
 	struct completion completion;
@@ -1719,12 +1722,15 @@ static void qpnp_timed_enable_worker(struct work_struct *work)
 	spin_lock(&hap->td_lock);
 	value = hap->td_value;
 	spin_unlock(&hap->td_lock);
+<<<<<<< HEAD
 
 	/* Vibrator already disabled */
 	if (!value && !hap->state)
 		return;
 
 	flush_work(&hap->work);
+=======
+>>>>>>> aosip-upstream/pie
 
 	mutex_lock(&hap->lock);
 	hrtimer_cancel(&hap->hap_timer);
@@ -1797,6 +1803,25 @@ static void qpnp_hap_td_enable(struct timed_output_dev *dev, int value)
 }
 
 void set_vibrate(int value)
+{
+	qpnp_hap_td_enable(&ghap->timed_dev, value);
+}
+
+/* enable interface from timed output class */
+static void qpnp_hap_td_enable(struct timed_output_dev *dev, int value)
+{
+        struct qpnp_hap *hap = container_of(dev, struct qpnp_hap,
+                                         timed_dev);
+
+        spin_lock(&hap->td_lock);
+        hap->td_value = value;
+        spin_unlock(&hap->td_lock);
+
+        schedule_work(&hap->td_work);
+}
+
+void set_vibrate(int value)
+
 {
 	qpnp_hap_td_enable(&ghap->timed_dev, value);
 }
@@ -2468,7 +2493,10 @@ static int qpnp_haptic_probe(struct spmi_device *spmi)
 
 	mutex_init(&hap->lock);
 	mutex_init(&hap->wf_lock);
+<<<<<<< HEAD
 	mutex_init(&hap->set_lock);
+=======
+>>>>>>> aosip-upstream/pie
 	spin_lock_init(&hap->td_lock);
 
 	INIT_WORK(&hap->work, qpnp_hap_worker);
